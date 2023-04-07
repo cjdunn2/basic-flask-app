@@ -19,30 +19,39 @@ body {
     background: #f1f7dc;
 }
 
-h1, h2 {
+h1,
+h2 {
     font-family: 'Droid Serif', serif;
     font-size: 3em;
     margin: 0;
-		padding-bottom: 1em;
+    padding-bottom: 1em;
 }
 
 h2 {
     font-size: 2em;
 }
 
-p, li {
+p,
+li {
     font-size: 1.4em;
 }
 
 p.credit {
-	font-size: 0.9em;
+    font-size: 0.9em;
+}
+
+a {
+    color: #1484bc;
+    text-decoration: none;
+    font-size: 2em;
 }
 
 img {
-	display: block;
-	margin: auto;
-	max-width: 100%;
+    display: block;
+    margin: auto;
+    max-width: 100%;
 }
+
 
 /* links */
 
