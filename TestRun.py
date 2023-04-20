@@ -3,6 +3,9 @@ import random
 import csv
 import numpy as np
 import time
+import os.path
+import helper.DataGenerate as dg
+import helper.graphing as graphing
 
 #i need to take in the csv files from static and then run the model on them
 """
@@ -245,10 +248,13 @@ def assign_workloads(workload_list, vm_list):
             missed.append(workload[0])
             # raise Exception("No valid VM found for workload {}".format(workload[0]))
 
-        assigned_vms.append(vm[0])
-        total_cost += vm[3]
-        vm_list.remove(vm)
-        vm_list.append((vm[0], vm[1]-workload[1], vm[2]-workload[2], vm[3]))
+        try:
+            assigned_vms.append(vm[0])
+            total_cost += vm[3]
+            vm_list.remove(vm)
+            vm_list.append((vm[0], vm[1]-workload[1], vm[2]-workload[2], vm[3]))
+        except:
+            continue
     #this returns a list of vm ids, and the total cost
     eTime = time.time()
     fTime = eTime - sTime
@@ -305,8 +311,40 @@ def run_expirement():
     
     return answer
 
+def run_expirement_a_lot():
+    
+    #for loop to run the experiment 100 times
+    ArrayOfAnswers = []
+    
+    for i in range(0,100):
+        
+        #generate fresh set of csv files fifty vms and one hundred workloads
+        tNumber = dg.generate_data(100, 100)
+        print(i)
+        # parse the csv files
+        vms = parse_csv('static/csv/vms.csv')
+        images = parse_csv('static/csv/images.csv')
+        
+        Algorithm1 = allocate_vms(vms, images)
+        print('algo1: ', Algorithm1)
+        Knapsack = knapsack_vms(images, vms)
+        Recursive_Knapsack = recursive_knapsack_vms(images, vms)
+        Dynamic = assign_workloads(images, vms)    
+        Static = assign_workloads_static(images, vms)
+        
+        #answer from this iteration
+        answer = [Algorithm1, Knapsack, Recursive_Knapsack, Dynamic, Static]
+        #now save the answer to the graphing csv and then append it to the array of answers
+        for_graph = graphing.data_to_csv(answer)
+    
+
+        ArrayOfAnswers.append(answer)
+        
+    return ArrayOfAnswers
+
    
 if __name__ == "__main__":
+    """
     #these are the csv files that will be parsed
     vms = parse_csv('static/csv/vms.csv')
     images = parse_csv('static/csv/images.csv')
@@ -335,7 +373,36 @@ if __name__ == "__main__":
     print('\nStatic?\n', Static)
     
     #now I need all of these methods to be usable from the web app
+    """
+    # #these are the csv files that will be parsed
+    # vms = parse_csv('static/csv/vms.csv')
+    # images = parse_csv('static/csv/images.csv')
     
+        
+    # #run the model on the parsed csv files
+    # Algorithm1 = allocate_vms(vms, images)
+    # print('\nAlgorithm Working?\n' , Algorithm1)
     
+    # #run the knapsack model on the parsed csv files
+    # Knapsack = knapsack_vms(images, vms)
+    # print('\nKNAPSACK?\n', Knapsack)
+    
+    # #run the recursive knapsack model on the parsed csv files
+    # Recursive_Knapsack = recursive_knapsack_vms(images, vms)
+    # print('\nRecursive Knapsack?\n', Recursive_Knapsack)
+    
+    # #run the dynamic knapsack model on the parsed csv files
+    # # Dynamic_Knapsack = dynamic_knapsack_vms(images, vms)
+    # # print('Dynamic Knapsack?\n', Dynamic_Knapsack)
+    
+    # Dynamic = assign_workloads(images, vms)
+    # print('\nDynamic?\n', Dynamic)
+    
+    # Static = assign_workloads_static(images, vms)
+    # print('\nStatic?\n', Static)
+    
+    # #now I need all of these methods to be usable from the web app
+    
+    run = run_expirement_a_lot()
     
     

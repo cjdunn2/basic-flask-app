@@ -1,8 +1,12 @@
 {% extends 'base.html' %} {% block body %}
 
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.4/d3.min.js" integrity="sha512-nfUlp2ZWPKWlnAH/OsMeAqRSYBxOdPYeBXwceyw6QqqZ7uTT/s5/eS1hMKphjVBouk0jf/JQ8ULVJRnEqSHkXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
 <!-- to be filled by the Python script -->
 <h1 style="text-align: center; padding-bottom: 0.6rem;">{{ the_title }}</h1>
-<h1>{{data}}</h1>
+<!-- <h1>{{data}}</h1> -->
 
 <!-- note how items from the "static" folder are linked -->
 <img style="padding-bottom: 2rem" alt="Shadow" src="{{ url_for('static', filename='images/7factor.png') }}">
@@ -25,14 +29,122 @@
         <h3 style="text-align: center; padding-top: 0.0rem;"><u>CSV files for Test</u></h3>
         <a href="{{ url_for('static', filename='csv/virtualMachines.csv') }} ">virtualMachines CSV</a>
         <br>
-        <a href="{{ url_for('static', filename='csv/images.csv') }} ">Images CSV</a> {% endblock %}
+        <a href="{{ url_for('static', filename='csv/images.csv') }} ">Images CSV</a>
+    </div>
+
+    <div>
+        <h3 style="text-align: center; padding-top: 0.0rem;"><u>Results</u></h3>
+        {% block app_scripts%}
+        <div id="wrapper">
+            <h3>Graphs Below</h3>
+            <canvas id="myChart"></canvas>
+            <script>
+                //get the csv data
+                const chartData = "/static/csv/result.csv";
+                //parse
+                // const parseData = d3.csvParse(chartData)
+                d3.csv(chartData).then(function(data) {
+                    console.log(data)
+                    const x = data.map(function(d) {
+                        return d.Algorithm
+                    })
+                    const y = data.map(function(d) {
+                        return d.Cost
+                    })
+                    const z = data.map(function(d) {
+                        return d.Time
+                    })
+                    console.log(x)
+                    console.log(y)
+                    console.log(z)
+
+                    //now I need to get the data into the chart
+                    const ctx = document.getElementById('myChart').getContext('2d');
+
+                    // const dataForConfig = {
+                    //     labels: x,
+                    //     datasets: [{
+                    //         label: 'Cost',
+                    //         data: y,
+                    //         backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    //         borderColor: 'rgba(255, 99, 132, 1)',
+                    //         borderWidth: 1
+                    //     }, {
+                    //         label: 'Time',
+                    //         data: z,
+                    //         backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    //         borderColor: 'rgba(54, 162, 235, 1)',
+                    //         borderWidth: 1
+                    //     }]
+                    // };
+
+                    // const dataForConfig = {
+                    //     // labels: x,
+                    //     datasets: [{
+                    //         label: x,
+                    //         data: [y, z],
+                    //         backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    //         borderColor: 'rgba(255, 99, 132, 1)',
+                    //         borderWidth: 1
+                    //     }]
+                    // };
+
+                    //I need to have the label of each point be its algorithm type
+                    //I need to have the x axis be the cost and the y axis be the time
+                    const dataForConfig = {
+                        // labels: x,
+                        datasets: x.map((ds, i) => {
+                            return {
+                                label: x[i],
+                                data: [{
+                                    x: y[i],
+                                    y: z[i]
+                                }],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                // borderColor: 'rgba(255, 99, 0, 1)',
+                                //I want the border color of a point to depend on the algorithm
+                                borderColor: function(context) {
+                                    // var index = context.dataIndex;
+                                    // var value = context.dataset.data[index];
+                                    var type = context.dataset.label;
+                                    // console.log('WHATTHEFUCK', type)
+                                    return type == "Algorithm" ? 'red' : // draw negative values in red
+                                        type == "Knapsack" ? 'blue' : // else, alternate values in blue and green
+                                        type == "Recursive Knapsack" ? 'green' :
+                                        type == "Static" ? 'purple' :
+                                        type == "Dynamic" ? "brown" : 'black'
+                                },
+                                borderWidth: 1
+                            }
+                        })
+                    }
+
+                    const myChart = new Chart(ctx, {
+                        type: 'scatter',
+                        data: dataForConfig,
+                        options: {
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    stepSize: 1 / 20,
+                                }
+                            }
+                        }
+                    });
+                })
+            </script>
+        </div>
     </div>
 </div>
+{% endblock %} {% endblock %}
 
-<div>
-    <h3>Graphs Below</h3>
-    <canvas id="myChart" width="400" height="400"></canvas>
-</div>
+
+
+
+
 
 <br>
 

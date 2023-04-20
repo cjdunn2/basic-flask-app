@@ -49,14 +49,34 @@ def generate_images(num_images: int) -> pd.DataFrame:
             'Max_Ram': ram,
             'Max_CPU': cpu,
         })
+
+#this will be used to run the experiment repeatedly
+def generate_data(num_vm: int, num_images: int) -> pd.DataFrame:
+    vms = generate_vms(num_vm)
+    images = generate_images(num_images)
+    
+    if os.path.exists('../static/csv/vms.csv'):
+        os.remove('../static/csv/vms.csv')
+        print('File deleted')
+    if os.path.exists('../static/csv/images.csv'):
+        os.remove('../static/csv/images.csv')
+        print('File deleted')
+    
+    vms.to_csv('static/csv/vms.csv', index=False, header=False)
+    images.to_csv('static/csv/images.csv', index=False, header=False)
+    # static\csv\images.csv
+    return vms, images
         
 if __name__ == "__main__":
-    vms = generate_vms(NUMBER_OF_VMS)
-    images = generate_images(NUMBER_OF_VMS)
+    # vms = generate_vms(NUMBER_OF_VMS)
+    # images = generate_images(NUMBER_OF_VMS)
     
-    #I then need to save these csv's to the csv directory in this local
-    vms.to_csv('vms.csv', index=False, header=False)
-    images.to_csv('images.csv', index=False, header=False)
+    # #I then need to save these csv's to the csv directory in this local
+    # vms.to_csv('vms.csv', index=False, header=False)
+    # images.to_csv('images.csv', index=False, header=False)
+    
+    #test the generate data function
+    generate_data(NUMBER_OF_VMS, NUMBER_OF_VMS)
     
     
     

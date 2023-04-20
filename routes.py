@@ -1,7 +1,9 @@
 import os
+import time
 import openai
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 #import config
+import json as JSON
 import TestRun
 import helper.graphing as graphing
 
@@ -46,6 +48,7 @@ def index():
             images.save('static/csv/images.csv')
             print('File saved')
         
+        #this rus the experiment on the uploaded test data and then redirects
         # data = TestRun.run_experiment(images, virtualMachines)
         
         
@@ -59,18 +62,48 @@ def index():
         ImagePath =  'static/csv/images.csv'
         VM_Path = 'static/csv/virtualMachines.csv'
         
+        #this runs the experiment on the uploaded test data and returns the data
         data = TestRun.run_expirement()
         
-        data_strained = graphing.graph_data_helper(data)
+        #then I need to write this data to a csv file acting as back end for the graphing
+        write_to_csv = graphing.data_to_csv(data)
+        
+        #then I need a graphing helper that takes in static csv and then returns the data
+        data_for_graphing = graphing.data_for_graphing()
+        print('data_for_graphing', data_for_graphing)
+        
+        # algorithm = data_for_graphing[0]
+        # knapsack = data_for_graphing[1]
+        # recursive_knapsack = data_for_graphing[2]
+        # dynamic = data_for_graphing[3]
+        # static = data_for_graphing[4]
+        
+        #not sure if this is the best way to do this
+        # data_for_graphing = graphing.csv_to_json()
+        
+        create_data_for_graphing = graphing.create_data_for_graphing()
+        
+        print('data_for_graphing', data_for_graphing)        
         
         
-
         
         
+        #lets print all of those to be sure
+        # print('algorithm: ', algorithm, '\n', 'knapsack: ', knapsack, '\n', 'recursive_knapsack: ', recursive_knapsack, '\n', 'dynamic: ', dynamic, '\n', 'static: ', static)
         
-        #I need to get the graphing data and then make the graph
+        #then I need to send that to the template and then graph it using chart.js
         
-        return render_template('index.html', the_title='AWS MQP', data=data)
+        return render_template('index.html', 
+                               the_title='AWS MQP', 
+                               data=data,
+                               data_for_graphing=data_for_graphing,
+                            #    algorithm=algorithm,
+                            #    knapsack=knapsack,
+                            #    recursive_knapsack=recursive_knapsack,
+                            #    dynamic=dynamic,
+                            #    static=static,
+                            #    data_for_graphing= JSON.stringify(data_for_graphing),
+                               )
 
 @app.route('/symbol.html')
 def symbol():
