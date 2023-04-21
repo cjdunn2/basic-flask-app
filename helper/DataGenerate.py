@@ -65,7 +65,7 @@ def generate_data(num_vm: int, num_images: int) -> pd.DataFrame:
     vms.to_csv('static/csv/vms.csv', index=False, header=False)
     images.to_csv('static/csv/images.csv', index=False, header=False)
     # static\csv\images.csv
-    return vms, images
+    # return vms, images
         
 if __name__ == "__main__":
     # vms = generate_vms(NUMBER_OF_VMS)

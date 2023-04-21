@@ -3,142 +3,141 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.4/d3.min.js" integrity="sha512-nfUlp2ZWPKWlnAH/OsMeAqRSYBxOdPYeBXwceyw6QqqZ7uTT/s5/eS1hMKphjVBouk0jf/JQ8ULVJRnEqSHkXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <!-- to be filled by the Python script -->
-<h1 style="text-align: center; padding-bottom: 0.6rem;">{{ the_title }}</h1>
+<!-- <h1 style="text-align: center; padding-bottom: 0.6rem;">{{ the_title }}</h1> -->
 <!-- <h1>{{data}}</h1> -->
+<div class="grid grid-rows-[min-content_1fr] gap-2">
+    <img style="padding-bottom: 2rem" alt="Shadow" src="{{ url_for('static', filename='images/7factor.png') }}">
+    <div class="p-4 flex flex-col border gap-5 border-blue-400">
+        <div>
+            <h2 class="text-3xl self-center mb-5 bg-[#dd5d39] text-center rounded-md p-3 w-full text-white">Input Test Case VM's and Image's</h2>
+            <div>
+                <form class="flex flex-col gap-4 items-center" action="{{ url_for('index') }}" method="post" enctype="multipart/form-data">
+                    <div class="flex gap-4">
+                        <!-- <p class="text-lg">Work-Load</p> -->
+                        <input type="file" id="workload" name="worklaod" hidden>
+                        <label for="workload" class="w-[250px] text-center">Upload Workload</label>
+                    </div>
+                    <div class="flex gap-4">
+                        <!-- <p class="text-lg">VM</p> -->
+                        <input type="file" id="vmUpload" name="vmUpload" hidden>
+                        <label for="vmUpload" class="w-[250px] text-center">Upload VM</label>
+                    </div>
+                    <input class="text-lg mt-1 p-3 rounded-md text-white bg-[#1f94c4] w-[250px] text-center" type="submit">
+                </form>
+                <br>
+            </div>
+        </div>
 
-<!-- note how items from the "static" folder are linked -->
-<img style="padding-bottom: 2rem" alt="Shadow" src="{{ url_for('static', filename='images/7factor.png') }}">
+        <div class="flex flex-col gap-3">
+            <h3 class="text-3xl rounded-md text-white text-center p-3 bg-[#dd5d39]">CSV files for Test</h3>
+            <div class="flex flex-col items-center gap-4 ">
+                <a class="bg-[#1f94c4] text-white rounded-md p-3 text-lg w-[250px] text-center" href="{{ url_for('static', filename='csv/virtualMachines.csv') }} ">VirtualMachines CSV</a>
+                <a class="bg-[#1f94c4] text-white rounded-md p-3 text-lg w-[250px] text-center" href="{{ url_for('static', filename='csv/images.csv') }} ">Workload CSV</a>
+                <a class="bg-[#1f94c4] text-white rounded-md p-3 shadow-md text-lg w-[250px] text-center" href="{{ url_for('static', filename='csv/graphing_data.csv') }} ">Historical Graphing Data</a>
+                <a class="bg-[#1f94c4] text-white rounded-md p-3 text-lg w-[250px] text-center" href="{{ url_for('static', filename='csv/result.csv') }} ">Results</a>
+            </div>
 
-<div style="border: thin solid black; padding-top: 3rem">
-    <h2 style="text-align: center; padding-top: 0.6rem;">Input Test Case VM's and Image's</h2>
-    <div>
-        <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data">
-            <input type="file" id="virtualMachines" name="virtualMachines">
-            <input type="submit" value="VM Upload">
-        </form>
-        <br>
-        <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data">
-            <input type="file" id="images" name="images">
-            <input type="submit" value="Image Upload">
-        </form>
-    </div>
-    <br>
-    <div style="text-align: center; padding-bottom: 1rem;">
-        <h3 style="text-align: center; padding-top: 0.0rem;"><u>CSV files for Test</u></h3>
-        <a href="{{ url_for('static', filename='csv/virtualMachines.csv') }} ">virtualMachines CSV</a>
-        <br>
-        <a href="{{ url_for('static', filename='csv/images.csv') }} ">Images CSV</a>
-    </div>
-
-    <div>
-        <h3 style="text-align: center; padding-top: 0.0rem;"><u>Results</u></h3>
-        {% block app_scripts%}
-        <div id="wrapper">
-            <h3>Graphs Below</h3>
-            <canvas id="myChart"></canvas>
-            <script>
-                //get the csv data
-                const chartData = "/static/csv/result.csv";
-                //parse
-                // const parseData = d3.csvParse(chartData)
-                d3.csv(chartData).then(function(data) {
-                    console.log(data)
-                    const x = data.map(function(d) {
-                        return d.Algorithm
-                    })
-                    const y = data.map(function(d) {
-                        return d.Cost
-                    })
-                    const z = data.map(function(d) {
-                        return d.Time
-                    })
-                    console.log(x)
-                    console.log(y)
-                    console.log(z)
-
-                    //now I need to get the data into the chart
-                    const ctx = document.getElementById('myChart').getContext('2d');
-
-                    // const dataForConfig = {
-                    //     labels: x,
-                    //     datasets: [{
-                    //         label: 'Cost',
-                    //         data: y,
-                    //         backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    //         borderColor: 'rgba(255, 99, 132, 1)',
-                    //         borderWidth: 1
-                    //     }, {
-                    //         label: 'Time',
-                    //         data: z,
-                    //         backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    //         borderColor: 'rgba(54, 162, 235, 1)',
-                    //         borderWidth: 1
-                    //     }]
-                    // };
-
-                    // const dataForConfig = {
-                    //     // labels: x,
-                    //     datasets: [{
-                    //         label: x,
-                    //         data: [y, z],
-                    //         backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    //         borderColor: 'rgba(255, 99, 132, 1)',
-                    //         borderWidth: 1
-                    //     }]
-                    // };
-
-                    //I need to have the label of each point be its algorithm type
-                    //I need to have the x axis be the cost and the y axis be the time
-                    const dataForConfig = {
-                        // labels: x,
-                        datasets: x.map((ds, i) => {
-                            return {
-                                label: x[i],
-                                data: [{
-                                    x: y[i],
-                                    y: z[i]
-                                }],
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                // borderColor: 'rgba(255, 99, 0, 1)',
-                                //I want the border color of a point to depend on the algorithm
-                                borderColor: function(context) {
-                                    // var index = context.dataIndex;
-                                    // var value = context.dataset.data[index];
-                                    var type = context.dataset.label;
-                                    // console.log('WHATTHEFUCK', type)
-                                    return type == "Algorithm" ? 'red' : // draw negative values in red
-                                        type == "Knapsack" ? 'blue' : // else, alternate values in blue and green
-                                        type == "Recursive Knapsack" ? 'green' :
-                                        type == "Static" ? 'purple' :
-                                        type == "Dynamic" ? "brown" : 'black'
-                                },
-                                borderWidth: 1
-                            }
+        </div>
+        <div>
+            <h3 class="text-3xl bg-[#dd5d39] p-3 w-full text-white text-center rounded-md">Results</h3>
+            {% block app_scripts%}
+            <div id="wrapper">
+                <canvas id="myChart"></canvas>
+                <script>
+                    //get the csv data, this is updated every single time the page is loaded
+                    const chartData = "/static/csv/result.csv";
+                    //parse
+                    // const parseData = d3.csvParse(chartData)
+                    d3.csv(chartData).then(function(data) {
+                        console.log(data)
+                        const x = data.map(function(d) {
+                            return d.Algorithm
                         })
-                    }
+                        const y = data.map(function(d) {
+                            return d.Cost
+                        })
+                        const z = data.map(function(d) {
+                            return d.Time
+                        })
 
-                    const myChart = new Chart(ctx, {
-                        type: 'scatter',
-                        data: dataForConfig,
-                        options: {
-                            legend: {
-                                display: false
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    stepSize: 1 / 20,
+                        //now I need to get the data into the chart
+                        const ctx = document.getElementById('myChart').getContext('2d');
+
+                        //I need to have the label of each point be its algorithm type
+                        //I need to have the x axis be the cost and the y axis be the time
+                        const dataForConfig = {
+                            // labels: x,
+                            datasets: x.map((ds, i) => {
+                                return {
+                                    label: x[i],
+                                    data: [{
+                                        x: y[i],
+                                        y: z[i]
+                                    }],
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    // borderColor: 'rgba(255, 99, 0, 1)',
+                                    //I want the border color of a point to depend on the algorithm
+                                    borderColor: function(context) {
+                                        // var index = context.dataIndex;
+                                        // var value = context.dataset.data[index];
+                                        var type = context.dataset.label;
+                                        // console.log('WHATTHEFUCK', type)
+                                        return type == "Algorithm" ? 'red' : // draw negative values in red
+                                            type == "Knapsack" ? 'blue' : // else, alternate values in blue and green
+                                            type == "Recursive Knapsack" ? 'green' :
+                                            type == "Static" ? 'purple' :
+                                            type == "Dynamic" ? "brown" : 'black'
+                                    },
+                                    borderWidth: 1
+                                }
+                            })
+                        }
+
+                        const step_size = 0.025
+                        const max_y = 0.3
+
+                        const myChart = new Chart(ctx, {
+                            type: 'scatter',
+                            data: dataForConfig,
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        // stepSize: 0.05,
+                                        nax: max_y,
+                                        min: 0,
+                                        ticks: {
+                                            stepSize: step_size,
+                                            // max: 0.3,
+                                            // min: 0,
+                                            // stepSize: 0.05
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false,
+                                        labels: {
+                                            boxWidth: 0,
+                                            //set text to null to hide the legend
+                                            text: null
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    });
-                })
-            </script>
+                        });
+                    })
+                </script>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- note how items from the "static" folder are linked -->
+
 {% endblock %} {% endblock %}
 
 

@@ -9,12 +9,7 @@ import json
 def data_to_csv(data):
     
     data_labels = ['Algorithm', 'Knapsack', 'Recursive Knapsack', 'Dynamic', 'Static' ]
-    
-    
-    # print('AAAAAAA', data[0][1])
-    # print ('BBBBBBB', data[0][2])
-    # print('length', len(data))
-    
+        
     #I need to extract from data the cost and time and then put them into a list
     #I need to do this for all 5 of the data sets
     for_graphing = []
@@ -23,10 +18,7 @@ def data_to_csv(data):
         for_graphing.append([data_labels[i],data[i][1], data[i][2]])
         
     df = pd.DataFrame(for_graphing, columns = ['Algorithm', 'Cost', 'Time'])
-    
-    # print('df', df)
-    
-    
+        
     #This just appends the new data to that same local csv file
     df.to_csv('static/csv/graphing_data.csv', mode='a', index=False, header=False)    
     

@@ -36,6 +36,7 @@ def parse_csv(file):
         next(reader)    
         listForReturn = [[int(x) for x in row] for row in reader]
         f.close()
+        print(listForReturn)
         return listForReturn
     
 # def parse_csv_old(file):
@@ -297,6 +298,10 @@ def assign_workloads_static(workload_list, vm_list):
 #this is the method the route will call
 # def run_experiment(workload_list, vm_list):
 def run_expirement():
+    
+    #generate new set of csv files fifty vms and one hundred workloads
+    dg.generate_data(50, 100)
+    
     # parse the csv files
     vms = parse_csv('static/csv/vms.csv')
     images = parse_csv('static/csv/images.csv')
@@ -320,13 +325,11 @@ def run_expirement_a_lot():
         
         #generate fresh set of csv files fifty vms and one hundred workloads
         tNumber = dg.generate_data(100, 100)
-        print(i)
         # parse the csv files
         vms = parse_csv('static/csv/vms.csv')
         images = parse_csv('static/csv/images.csv')
         
         Algorithm1 = allocate_vms(vms, images)
-        print('algo1: ', Algorithm1)
         Knapsack = knapsack_vms(images, vms)
         Recursive_Knapsack = recursive_knapsack_vms(images, vms)
         Dynamic = assign_workloads(images, vms)    

@@ -8,15 +8,16 @@ body {
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 100%;
     color: #000;
-    background: #407189;
+    background: #dd5d39;
     margin: 0;
 }
 
 #container {
     margin: 2em auto;
+    color: #ffffff;
     width: 740px;
     padding: 2em 4em;
-    background: #f1f7dc;
+    background: #ffffff;
 }
 
 h1,
@@ -74,7 +75,7 @@ a:hover {
 
 @media (max-width: 800px) {
     body {
-        background: #f1f7dc;
+        background: #ffffff;
     }
     #container {
         margin: 0;

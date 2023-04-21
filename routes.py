@@ -70,39 +70,24 @@ def index():
         
         #then I need a graphing helper that takes in static csv and then returns the data
         data_for_graphing = graphing.data_for_graphing()
-        print('data_for_graphing', data_for_graphing)
-        
-        # algorithm = data_for_graphing[0]
-        # knapsack = data_for_graphing[1]
-        # recursive_knapsack = data_for_graphing[2]
-        # dynamic = data_for_graphing[3]
-        # static = data_for_graphing[4]
+        # print('data_for_graphing', data_for_graphing)
+      
+        #this is the data for the graphing  
+            # algorithm = data_for_graphing[0]
+            # knapsack = data_for_graphing[1]
+            # recursive_knapsack = data_for_graphing[2]
+            # dynamic = data_for_graphing[3]
+            # static = data_for_graphing[4]
         
         #not sure if this is the best way to do this
         # data_for_graphing = graphing.csv_to_json()
         
         create_data_for_graphing = graphing.create_data_for_graphing()
         
-        print('data_for_graphing', data_for_graphing)        
-        
-        
-        
-        
-        #lets print all of those to be sure
-        # print('algorithm: ', algorithm, '\n', 'knapsack: ', knapsack, '\n', 'recursive_knapsack: ', recursive_knapsack, '\n', 'dynamic: ', dynamic, '\n', 'static: ', static)
-        
-        #then I need to send that to the template and then graph it using chart.js
-        
         return render_template('index.html', 
                                the_title='AWS MQP', 
                                data=data,
                                data_for_graphing=data_for_graphing,
-                            #    algorithm=algorithm,
-                            #    knapsack=knapsack,
-                            #    recursive_knapsack=recursive_knapsack,
-                            #    dynamic=dynamic,
-                            #    static=static,
-                            #    data_for_graphing= JSON.stringify(data_for_graphing),
                                )
 
 @app.route('/symbol.html')

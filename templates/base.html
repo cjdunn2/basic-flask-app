@@ -6,13 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ the_title }}</title>
     <link href="https://fonts.googleapis.com/css?family=Droid+Serif|Source+Sans+Pro" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.min.js" integrity="sha512-v3ygConQmvH0QehvQa6gSvTE2VdBZ6wkLOlmK7Mcy2mZ0ZF9saNbbk19QeaoTHdWIEiTlWmrwAL4hS8ElnGFbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        label {
+            display: inline-block;
+            background-color: #1f94c4;
+            color: white;
+            padding: 0.8rem;
+            font-family: sans-serif;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            margin-top: 0;
+        }
+    </style>
 </head>
 
-<body>
 
-    <div id="container">
+<body style="background-color: #1f94c4;">
+
+    <div class="bg-white rounded-md flex justify-center" id="container">
 
         <!-- Jinja2 directives: page contents will go between them -->
         {% block body %} {% endblock %}
